@@ -89,6 +89,7 @@
         <p>Intentando abrir Among Us. Si no se abre automáticamente en unos segundos o si el navegador te pregunta,
             asegúrate de permitir abrir enlaces en la aplicación externa.</p>
 
+        <p id="copy-status" style="color: #4CAF50; font-weight: bold; display: none;"></p>
         <a href="amongus://" id="deep-link-btn" class="btn">Abrir Juego Manualmente</a>
         <br><br>
         <a href="https://play.google.com/store/apps/details?id=com.innersloth.spacemafia" class="btn"
@@ -96,24 +97,50 @@
     </div>
 
     <script>
+        function copyCodeToClipboard(code) {
+            if (!code) return;
+            // La API de portapapeles requiere contexto seguro (HTTPS)
+            navigator.clipboard.writeText(code).then(() => {
+                const statusEl = document.getElementById("copy-status");
+                statusEl.textContent = "¡Código de sala (" + code + ") copiado al portapapeles!";
+                statusEl.style.display = "block";
+            }).catch(err => {
+                console.error("No se pudo copiar el código automáticamente:", err);
+            });
+        }
+
         function openAmongUs() {
-            // Obtain any parameters from the URL (like room codes if any are passed)
-            // Example: ?roomCode=ABCDEF
+            // Extraer el código de sala de la URL (ej: ?code=ABCDEF o ?codigo=ABCDEF)
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomCode = urlParams.get('code') || urlParams.get('codigo');
+
             const queryString = window.location.search;
             const hashString = window.location.hash;
 
-            // Build the Among Us URL (preserving parameters so you can send links with room codes)
+            // Construir el enlace profundo preservando todo
             const amongUsBase = "amongus://";
             const fullDeepLink = amongUsBase + queryString + hashString;
 
-            // Update the manual deep link button
-            document.getElementById("deep-link-btn").href = fullDeepLink;
+            // Actualizar el botón manual
+            const btn = document.getElementById("deep-link-btn");
+            btn.href = fullDeepLink;
 
-            // Attempt to automatically redirect to the app
+            // Si hay un código, intentar copiarlo al portapapeles
+            if (roomCode) {
+                // Al hacer clic en el botón manual, garantizar que se copie
+                btn.addEventListener('click', () => {
+                    copyCodeToClipboard(roomCode);
+                });
+
+                // Intentar copiar automáticamente al cargar
+                copyCodeToClipboard(roomCode);
+            }
+
+            // Intentar redirigir automáticamente al juego
             window.location.replace(fullDeepLink);
         }
 
-        // Run the redirect after a very brief delay to ensure the UI renders
+        // Ejecutar después de un breve retraso para que la interfaz cargue
         window.onload = function () {
             setTimeout(openAmongUs, 300);
         };
