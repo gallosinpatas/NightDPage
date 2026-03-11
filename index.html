@@ -97,8 +97,8 @@
             transform: translateY(0);
         }
 
-        /* Demo Section Styles */
-        .demo-section {
+        /* Tracker Section Styles */
+        .tracker-section {
             background: linear-gradient(145deg, #1f2335, #1a1b26);
             border: 1px solid #414868;
             border-radius: 12px;
@@ -108,19 +108,6 @@
             position: relative;
             overflow: hidden;
             box-sizing: border-box;
-        }
-
-        .demo-badge {
-            position: absolute;
-            top: 15px;
-            right: -30px;
-            background: #ff9e64;
-            color: #1a1b26;
-            padding: 5px 35px;
-            transform: rotate(45deg);
-            font-weight: bold;
-            font-size: 0.8rem;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .input-group {
@@ -138,6 +125,8 @@
             color: white;
             font-size: 1rem;
             outline: none;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         input:disabled {
@@ -154,9 +143,8 @@
             align-items: center;
             gap: 15px;
             margin-top: 15px;
-            display: none;
-            /* Hidden strictly until added */
             animation: slideUp 0.3s ease;
+            position: relative;
         }
 
         @keyframes slideUp {
@@ -180,6 +168,57 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .user-status {
+            color: #ff9e64;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        .user-status.online {
+            color: #9ece6a;
+        }
+
+        .user-status.offline {
+            color: #f7768e;
+        }
+
+        .user-status.checking {
+            color: #e0af68;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid #414868;
+            color: #a9b1d6;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            margin-top: 5px;
+        }
+
+        .refresh-btn:hover {
+            background: #2d2f40;
+            color: white;
         }
 
         .promo {
@@ -196,6 +235,12 @@
             margin-bottom: 15px;
             height: 20px;
             font-weight: bold;
+        }
+
+        #targets-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
     </style>
 </head>
@@ -223,40 +268,29 @@
         </a>
     </div>
 
-    <!-- Roblox Hunter Demo Section -->
-    <div class="demo-section">
-        <div class="demo-badge">REGALO</div>
+    <!-- Roblox Hunter Tracker Section -->
+    <div class="tracker-section">
         <h2 style="color: #bb9af7; margin-top: 0; display: flex; align-items: center; gap: 10px;">🎯 Cacería Roblox</h2>
-        <p style="font-size: 0.9rem;">Prueba una función exclusiva de nuestra App Oficial. Añade a tu primer objetivo a
-            la
-            lista de caza. ¡Elige bien, en la <span style="color: #ff9e64; font-weight: bold;">Demo</span> solo puedes
-            añadir uno y no se puede borrar!</p>
+        <p style="font-size: 0.9rem;">Rastreador de objetivos oficial de Night Dragons. Ingresa el usuario de Roblox que
+            deseas cazar para seguir su estado.</p>
 
         <div class="input-group">
             <input type="text" id="target-input" placeholder="Nombre en Roblox..." autocomplete="off">
             <button id="add-target-btn" class="btn"
-                style="width: auto; margin: 0; background-color: #bb9af7;">Rastrear</button>
+                style="width: auto; margin: 0; background-color: #bb9af7;">Fijar</button>
         </div>
-        <p id="demo-msg" style="color: #ff9e64; font-size: 0.8rem; margin: 5px 0 0 0; display: none;"></p>
+        <p id="tracker-msg" style="color: #ff9e64; font-size: 0.8rem; margin: 5px 0 15px 0; display: none;"></p>
 
-        <div class="target-card" id="target-card">
-            <div class="target-avatar">🏴‍☠️</div>
-            <div style="text-align: left; flex: 1;">
-                <div style="font-weight: bold; font-size: 1.1rem; color: #ff4747;" id="target-name">Nombre</div>
-                <div style="color: #a9b1d6; font-size: 0.8rem;">Estado: <span style="color: #ff9e64;">Buscado</span>
-                </div>
-            </div>
-            <div
-                style="font-size: 0.7rem; color: #414868; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; padding-left: 10px; border-left: 1px solid #2d2f40;">
-                DEMO</div>
+        <div id="targets-container">
+            <!-- Targets will be injected here -->
         </div>
 
         <div class="promo">
-            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 Obtén la App del Clan</h3>
-            <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Añade objetivos ilimitados en Roblox,
-                organiza torneos y usa utilidades avanzadas al unirte al clan.</p>
+            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 App de Night Dragons</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Descarga la App de Escritorio para
+                organizar torneos, ver la Tier List oficial y usar utilidades avanzadas.</p>
             <a href="https://github.com/GallosInPatas/NightDPage" target="_blank" class="btn"
-                style="background-color: #7aa2f7; margin-bottom: 0;">Obtener Beneficios</a>
+                style="background-color: #7aa2f7; margin-bottom: 0;">Obtener App</a>
         </div>
     </div>
 
@@ -274,12 +308,10 @@
             roomCode = roomCode.toUpperCase();
             displayCodeEl.textContent = roomCode;
 
-            // Configurar enlace del juego devolviéndonos a URL Scheme con query intacto
             const queryString = window.location.search;
             const hashString = window.location.hash;
             playBtn.href = "amongus://" + queryString + hashString;
 
-            // Funcionalidad manual de copiar en vez de redireccionar automaticamente
             copyBtn.addEventListener('click', () => {
                 navigator.clipboard.writeText(roomCode).then(() => {
                     copyStatusEl.textContent = "¡Código de sala copiado!";
@@ -308,53 +340,136 @@
             copyBtn.disabled = true;
         }
 
-        // --- Lógica de la Demo Cacería ---
+        // --- Lógica del Rastreador (Cacería) ---
         const targetInput = document.getElementById('target-input');
         const addTargetBtn = document.getElementById('add-target-btn');
-        const targetCard = document.getElementById('target-card');
-        const targetNameEl = document.getElementById('target-name');
-        const demoMsg = document.getElementById('demo-msg');
+        const targetsContainer = document.getElementById('targets-container');
+        const trackerMsg = document.getElementById('tracker-msg');
 
-        // Check local storage for existing target
-        const demoStorageKey = 'nightDragonsRobloxTargetDemo';
-        const savedTarget = localStorage.getItem(demoStorageKey);
+        const STORAGE_KEY = 'nd_roblox_targets';
+        const UNLOCK_KEY = 'nd_tracker_unlocked';
 
-        if (savedTarget) {
-            showTarget(savedTarget);
+        // This is a simple base64 encoded string comparison to hide the password from obvious view
+        // The password is "AdminND2026", encoded as "QWRtaW5ORDIwMjY="
+        const MAGIC_WORD_HASH = "QWRtaW5ORDIwMjY=";
+
+        let targetsList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        let isProUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true';
+
+        function saveTargets() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(targetsList));
+        }
+
+        function createTargetCard(targetId, targetName) {
+            const card = document.createElement('div');
+            card.className = 'target-card';
+            card.id = `target-card-${targetId}`;
+
+            card.innerHTML = `
+                <div class="target-avatar">🏴‍☠️</div>
+                <div style="text-align: left; flex: 1;">
+                    <div style="font-weight: bold; font-size: 1.1rem; color: #ff4747;">${targetName}</div>
+                    <div style="color: #a9b1d6; font-size: 0.8rem;">Estado: <span class="user-status offline" id="status-${targetId}">Desconectado</span></div>
+                    <button class="refresh-btn" onclick="checkStatus('${targetId}')">🔄 Verificar Estado</button>
+                    ${isProUnlocked ? '<button class="refresh-btn" style="color:#f7768e; border-color:#f7768e; margin-left:5px;" onclick="removeTarget(\'' + targetId + '\')">✖</button>' : ''}
+                </div>
+            `;
+            return card;
+        }
+
+        function renderAllTargets() {
+            targetsContainer.innerHTML = '';
+            targetsList.forEach(t => {
+                targetsContainer.appendChild(createTargetCard(t.id, t.name));
+            });
+
+            if (targetsList.length >= 1 && !isProUnlocked) {
+                targetInput.disabled = true;
+                targetInput.placeholder = "Límite máximo alcanzado (1/1)";
+                addTargetBtn.disabled = true;
+                addTargetBtn.style.opacity = "0.5";
+            } else {
+                targetInput.disabled = false;
+                targetInput.placeholder = "Nombre en Roblox...";
+                addTargetBtn.disabled = false;
+                addTargetBtn.style.opacity = "1";
+            }
+        }
+
+        // Global function for the inline onclick handler
+        window.checkStatus = function (targetId) {
+            const statusEl = document.getElementById('status-' + targetId);
+            if (!statusEl) return;
+
+            statusEl.className = 'user-status checking';
+            statusEl.textContent = 'Verificando...';
+
+            // Fake delay to simulate network request latency
+            setTimeout(() => {
+                // Randomly assign Online or Offline strictly for the visual effect
+                const isOnline = Math.random() > 0.5;
+                statusEl.className = 'user-status ' + (isOnline ? 'online' : 'offline');
+                statusEl.textContent = isOnline ? 'En Juego' : 'Últ. vez hace 2h';
+            }, 1800);
+        }
+
+        window.removeTarget = function (targetId) {
+            targetsList = targetsList.filter(t => t.id !== targetId);
+            saveTargets();
+            renderAllTargets();
         }
 
         addTargetBtn.addEventListener('click', () => {
             const name = targetInput.value.trim();
 
-            if (localStorage.getItem(demoStorageKey)) {
-                demoMsg.textContent = "Ya usaste tu cuota de rastreo en la demo. Descarga la app del Clan.";
-                demoMsg.style.display = "block";
+            if (!name) return;
+
+            // Check for secret code
+            try {
+                if (btoa(name) === MAGIC_WORD_HASH) {
+                    localStorage.setItem(UNLOCK_KEY, 'true');
+                    isProUnlocked = true;
+                    targetInput.value = "";
+                    trackerMsg.textContent = "🔓 Protocolo Administrador Activado. Límite de rastreo eliminado.";
+                    trackerMsg.style.color = "#9ece6a";
+                    trackerMsg.style.display = "block";
+                    renderAllTargets(); // Re-render to show delete buttons and unlock input
+
+                    setTimeout(() => {
+                        trackerMsg.style.display = "none";
+                    }, 5000);
+                    return;
+                }
+            } catch (e) { } // Ignore btoa errors on non-latin chars
+
+            if (!isProUnlocked && targetsList.length >= 1) {
+                trackerMsg.textContent = "Has alcanzado el límite básico de rastreo (1 cuenta).";
+                trackerMsg.style.display = "block";
                 return;
             }
 
             if (name.length < 3) {
-                demoMsg.textContent = "⚠️ Ingresa un nombre válido de Roblox.";
-                demoMsg.style.display = "block";
+                trackerMsg.textContent = "⚠️ Ingresa un nombre válido de Roblox.";
+                trackerMsg.style.display = "block";
                 return;
             }
 
-            // Save and display
-            localStorage.setItem(demoStorageKey, name);
-            showTarget(name);
+            trackerMsg.style.display = "none";
+
+            const newTarget = {
+                id: 'T' + Date.now() + Math.floor(Math.random() * 100),
+                name: name
+            };
+
+            targetsList.push(newTarget);
+            saveTargets();
+
+            renderAllTargets();
+            targetInput.value = "";
         });
 
-        function showTarget(name) {
-            targetNameEl.textContent = name;
-            targetCard.style.display = "flex";
-            targetInput.disabled = true;
-            targetInput.value = "";
-            targetInput.placeholder = "Objetivo bloqueado 🔒";
-            addTargetBtn.disabled = true;
-            addTargetBtn.style.opacity = "0.5";
-            demoMsg.textContent = "Bloqueado permanentemente en modo Demo.";
-            demoMsg.style.display = "block";
-            demoMsg.style.color = "#a9b1d6";
-        }
+        // Initial render
+        renderAllTargets();
     </script>
 </body>
 
