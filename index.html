@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Night Dragons - Utilidades</title>
+    <title>Night Dragons - Invitación Among Us</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -14,111 +14,17 @@
             color: #ffffff;
             margin: 0;
             box-sizing: border-box;
-            overflow-x: hidden;
-        }
-
-        /* Sidebar Sidebar */
-        .sidebar {
-            width: 80px;
-            background-color: #1a1b26;
-            border-right: 1px solid #2d2f40;
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            padding-top: 2rem;
-            transition: width 0.3s;
-            z-index: 100;
-        }
-
-        .sidebar:hover {
-            width: 250px;
-            align-items: flex-start;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            width: 100%;
-            padding: 15px 25px;
-            color: #a9b1d6;
-            text-decoration: none;
-            cursor: pointer;
-            box-sizing: border-box;
-            transition: all 0.2s;
-            border-left: 3px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: #1f2335;
-            color: #fff;
-        }
-
-        .nav-item.active {
-            color: #bb9af7;
-            border-left-color: #bb9af7;
-            background-color: rgba(187, 154, 247, 0.1);
-        }
-
-        .nav-icon {
-            font-size: 1.5rem;
-            min-width: 30px;
-            text-align: center;
-            margin-right: 15px;
-        }
-
-        .nav-text {
-            font-weight: bold;
-            opacity: 0;
-            white-space: nowrap;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-
-        .sidebar:hover .nav-text {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-            display: flex;
             justify-content: center;
-            align-items: flex-start;
-            overflow-y: auto;
         }
 
-        .view-section {
-            display: none;
-            width: 100%;
-            max-width: 500px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Common Container Styles */
         .container {
             background-color: #1a1b26;
-            padding: 2rem;
+            padding: 2.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             width: 100%;
+            max-width: 450px;
             text-align: center;
             border: 1px solid #2d2f40;
             box-sizing: border-box;
@@ -127,25 +33,15 @@
         h1 {
             color: #ff4747;
             margin-top: 0;
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-
-        h2.purple-title {
-            color: #bb9af7;
-            margin-top: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
         }
 
         p {
             color: #a9b1d6;
             line-height: 1.5;
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            font-size: 1rem;
         }
 
         .btn {
@@ -153,13 +49,12 @@
             justify-content: center;
             align-items: center;
             gap: 10px;
-            padding: 12px 20px;
-            background-color: #4CAF50;
+            padding: 14px 20px;
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: all 0.2s;
             cursor: pointer;
             border: none;
@@ -179,7 +74,6 @@
         }
 
         .btn:hover {
-            background-color: #45a049;
             transform: translateY(-2px);
         }
 
@@ -187,120 +81,26 @@
             transform: translateY(0);
         }
 
-        /* Component: Code Display */
         .code-display {
             background-color: #0f1015;
-            padding: 1rem;
+            padding: 1.2rem;
             border-radius: 8px;
             font-family: monospace;
-            font-size: 2rem;
-            letter-spacing: 4px;
+            font-size: 2.5rem;
+            letter-spacing: 5px;
             font-weight: bold;
             color: #fff;
-            margin-bottom: 1.5rem;
-            border: 1px dashed #414868;
+            margin-bottom: 1rem;
+            border: 2px dashed #414868;
         }
 
-        /* Component: Inputs */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #414868;
-            background: #0f1015;
-            color: white;
-            font-size: 1rem;
-            outline: none;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        input:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Component: Target Card */
-        .target-card {
-            background: #0f1015;
-            border: 1px solid #ff4747;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-top: 15px;
-            animation: slideUp 0.3s ease;
-            position: relative;
-        }
-
-        .target-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #2d2f40;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .user-status {
-            color: #ff9e64;
+        #copy-status {
+            color: #73daca;
+            font-size: 0.95rem;
+            margin-top: -5px;
+            margin-bottom: 20px;
+            height: 20px;
             font-weight: bold;
-            font-size: 0.8rem;
-        }
-
-        .user-status.online {
-            color: #9ece6a;
-        }
-
-        .user-status.offline {
-            color: #f7768e;
-        }
-
-        .user-status.checking {
-            color: #e0af68;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 1;
-            }
-
-            50% {
-                opacity: 0.6;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        .refresh-btn {
-            background: transparent;
-            border: 1px solid #414868;
-            color: #a9b1d6;
-            cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            transition: all 0.2s;
-            margin-top: 5px;
-        }
-
-        .refresh-btn:hover {
-            background: #2d2f40;
-            color: white;
         }
 
         .promo {
@@ -309,246 +109,41 @@
             border-top: 1px dashed #414868;
             text-align: center;
         }
-
-        #copy-status {
-            color: #73daca;
-            font-size: 0.9rem;
-            margin-top: -5px;
-            margin-bottom: 15px;
-            height: 20px;
-            font-weight: bold;
-        }
-
-        #targets-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-height: 400px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #414868;
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #565f89;
-        }
     </style>
 </head>
 
 <body>
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
-        <div class="nav-item active" data-target="view-amongus">
-            <span class="nav-icon">🚀</span>
-            <span class="nav-text">Among Us URL</span>
+    <div class="container">
+        <h1>🚀 Unirse a la Partida</h1>
+        <p>Estás a punto de unirte a una partida privada de Among Us.</p>
+
+        <div class="code-display" id="display-code">------</div>
+        <div id="copy-status"></div>
+
+        <button id="copy-btn" class="btn" style="background-color: #3b4252; color: #d8dee9; border: 1px solid #4c566a;">
+            📋 Copiar Código
+        </button>
+
+        <a href="#" id="play-btn" class="btn primary">
+            🎮 Abrir Among Us Ahora
+        </a>
+
+        <a href="https://play.google.com/store/apps/details?id=com.innersloth.spacemafia"
+            style="color: #a9b1d6; font-size: 0.9rem; text-decoration: none; display: inline-block; margin-top: 15px;">
+            ¿No tienes el juego? Descárgalo aquí
+        </a>
+
+        <div class="promo">
+            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 App de Night Dragons</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Descarga la App de Escritorio oficial
+                para el clan.</p>
+            <a href="https://github.com/GallosInPatas/NightDPage" target="_blank" class="btn"
+                style="background-color: #7aa2f7; margin-bottom: 0px; max-width: 200px; margin-left: auto; margin-right: auto; padding: 10px; font-size: 0.95rem;">Obtener
+                App</a>
         </div>
-        <div class="nav-item" data-target="view-tracker">
-            <span class="nav-icon">🎯</span>
-            <span class="nav-text">Cacería Roblox</span>
-        </div>
-    </nav>
-
-    <!-- Main Content -->
-    <main class="main-content">
-
-        <!-- View: Among Us -->
-        <section id="view-amongus" class="view-section active">
-            <div class="container">
-                <h1>🚀 Unirse a la Partida</h1>
-                <p>Estás a punto de unirse a una partida privada de Among Us.</p>
-
-                <div class="code-display" id="display-code">------</div>
-                <div id="copy-status"></div>
-
-                <button id="copy-btn" class="btn"
-                    style="background-color: #3b4252; color: #d8dee9; border: 1px solid #4c566a;">
-                    📋 Copiar Código
-                </button>
-
-                <a href="#" id="play-btn" class="btn primary">
-                    🎮 Abrir Among Us Ahora
-                </a>
-
-                <a href="https://play.google.com/store/apps/details?id=com.innersloth.spacemafia"
-                    style="color: #a9b1d6; font-size: 0.85rem; text-decoration: none; display: inline-block; margin-top: 10px;">
-                    ¿No tienes el juego? Descárgalo aquí
-                </a>
-            </div>
-        </section>
-
-        <!-- View: Tier List Demo -->
-        <section id="view-tierlist" class="view-section">
-            <div class="container"
-                style="border-color: #414868; background: linear-gradient(145deg, #1f2335, #1a1b26); max-width: 600px;">
-                <h2 class="purple-title">📊 Mini Tier List</h2>
-                <p style="font-size: 0.9rem;">Prueba la dinámica de nuestra Tier List interactiva. Arrastra los
-                    elementos a las categorías.</p>
-
-                <!-- Tier List Structure -->
-                <div class="tier-list-container">
-                    <div class="tier-row">
-                        <div class="tier-label" style="background-color: #ff7e67;">S</div>
-                        <div class="tier-dropzone" data-tier="S"></div>
-                    </div>
-                    <div class="tier-row">
-                        <div class="tier-label" style="background-color: #ffdf71;">A</div>
-                        <div class="tier-dropzone" data-tier="A"></div>
-                    </div>
-                    <div class="tier-row">
-                        <div class="tier-label" style="background-color: #8cd867;">B</div>
-                        <div class="tier-dropzone" data-tier="B"></div>
-                    </div>
-                </div>
-
-                <!-- Items Pool -->
-                <div class="items-pool" id="items-pool" data-tier="pool">
-                    <div class="tier-item" draggable="true" id="item1">🍎</div>
-                    <div class="tier-item" draggable="true" id="item2">🧊</div>
-                    <div class="tier-item" draggable="true" id="item3">🔥</div>
-                    <div class="tier-item" draggable="true" id="item4">🐉</div>
-                    <div class="tier-item" draggable="true" id="item5">⚡</div>
-                </div>
-
-                <div class="promo" style="margin-top: 2rem;">
-                    <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 App de Night Dragons</h3>
-                    <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Descarga la App de Escritorio
-                        para guardar tus creadores, usar imágenes reales personalizadas y compartir tus Tier Lists con
-                        el Clan.</p>
-                    <a href="https://github.com/GallosInPatas/NightDPage" target="_blank" class="btn"
-                        style="background-color: #7aa2f7; margin-bottom: 0px; max-width: 200px; margin-left: auto; margin-right: auto;">Obtener
-                        App</a>
-                </div>
-            </div>
-
-            <style>
-                .tier-list-container {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 5px;
-                    margin-bottom: 20px;
-                    border: 1px solid #414868;
-                    border-radius: 8px;
-                    overflow: hidden;
-                    background: #0f1015;
-                }
-
-                .tier-row {
-                    display: flex;
-                    min-height: 60px;
-                    border-bottom: 1px solid #2d2f40;
-                }
-
-                .tier-row:last-child {
-                    border-bottom: none;
-                }
-
-                .tier-label {
-                    width: 60px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-weight: bold;
-                    font-size: 1.2rem;
-                    color: #1a1b26;
-                }
-
-                .tier-dropzone {
-                    flex: 1;
-                    padding: 5px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 5px;
-                    align-items: center;
-                    transition: background-color 0.2s;
-                }
-
-                .tier-dropzone.drag-over {
-                    background-color: rgba(255, 255, 255, 0.05);
-                }
-
-                .items-pool {
-                    background: #0f1015;
-                    border: 1px dashed #414868;
-                    border-radius: 8px;
-                    min-height: 80px;
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 10px;
-                    padding: 15px;
-                    justify-content: center;
-                    align-items: center;
-                    transition: background-color 0.2s;
-                }
-
-                .items-pool.drag-over {
-                    background-color: rgba(255, 255, 255, 0.05);
-                }
-
-                .tier-item {
-                    width: 50px;
-                    height: 50px;
-                    background: #2d2f40;
-                    border: 2px solid #414868;
-                    border-radius: 8px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 2rem;
-                    cursor: grab;
-                    user-select: none;
-                    transition: transform 0.1s, box-shadow 0.1s;
-                }
-
-                .tier-item:active {
-                    cursor: grabbing;
-                    transform: scale(0.95);
-                }
-
-                .tier-item.dragging {
-                    opacity: 0.5;
-                }
-            </style>
-        </section>
-
-    </main>
+    </div>
 
     <script>
-        // --- Lógica de Navegación SPA ---
-        const navItems = document.querySelectorAll('.nav-item');
-        const views = document.querySelectorAll('.view-section');
-
-        navItems.forEach(item => {
-            item.addEventListener('click', () => {
-                // Update active nav
-                navItems.forEach(n => n.classList.remove('active'));
-                item.classList.add('active');
-
-                // Update active view
-                const targetId = item.getAttribute('data-target');
-                views.forEach(v => {
-                    if (v.id === targetId) {
-                        v.classList.add('active');
-                    } else {
-                        v.classList.remove('active');
-                    }
-                });
-            });
-        });
-
-        // --- Lógica de Among Us ---
         const urlParams = new URLSearchParams(window.location.search);
         let roomCode = urlParams.get('code') || urlParams.get('codigo');
 
@@ -591,45 +186,6 @@
             playBtn.href = "amongus://";
             copyBtn.style.opacity = "0.5";
             copyBtn.disabled = true;
-        }
-
-        // --- Lógica de la Mini Tier List (Drag & Drop) ---
-        const draggables = document.querySelectorAll('.tier-item');
-        const dropzones = document.querySelectorAll('.tier-dropzone, .items-pool');
-
-        draggables.forEach(draggable => {
-            draggable.addEventListener('dragstart', () => {
-                draggable.classList.add('dragging');
-            });
-
-            draggable.addEventListener('dragend', () => {
-                draggable.classList.remove('dragging');
-            });
-        });
-
-        dropzones.forEach(zone => {
-            zone.addEventListener('dragover', e => {
-                e.preventDefault(); // Permitir el drop
-                zone.classList.add('drag-over');
-            });
-
-            zone.addEventListener('dragleave', () => {
-                zone.classList.remove('drag-over');
-            });
-
-            zone.addEventListener('drop', e => {
-                e.preventDefault();
-                zone.classList.remove('drag-over');
-                const draggable = document.querySelector('.dragging');
-                if (draggable) {
-                    zone.appendChild(draggable);
-                }
-            });
-        });
-
-        // Redirigir la vista si hay código
-        if (roomCode) {
-            document.querySelector('[data-target="view-amongus"]').click();
         }
     </script>
 </body>
