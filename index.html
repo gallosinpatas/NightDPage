@@ -389,33 +389,138 @@
             </div>
         </section>
 
-        <!-- View: Roblox Tracker -->
-        <section id="view-tracker" class="view-section">
+        <!-- View: Tier List Demo -->
+        <section id="view-tierlist" class="view-section">
             <div class="container"
-                style="border-color: #414868; background: linear-gradient(145deg, #1f2335, #1a1b26);">
-                <h2 class="purple-title">🎯 Cacería Roblox</h2>
-                <p style="font-size: 0.9rem;">Rastreador de objetivos oficial de Night Dragons. Ingresa el usuario
-                    exacto de Roblox.</p>
+                style="border-color: #414868; background: linear-gradient(145deg, #1f2335, #1a1b26); max-width: 600px;">
+                <h2 class="purple-title">📊 Mini Tier List</h2>
+                <p style="font-size: 0.9rem;">Prueba la dinámica de nuestra Tier List interactiva. Arrastra los
+                    elementos a las categorías.</p>
 
-                <div class="input-group">
-                    <input type="text" id="target-input" placeholder="Nombre de usuario..." autocomplete="off">
-                    <button id="add-target-btn" class="btn"
-                        style="width: auto; margin: 0; background-color: #bb9af7;">Fijar</button>
+                <!-- Tier List Structure -->
+                <div class="tier-list-container">
+                    <div class="tier-row">
+                        <div class="tier-label" style="background-color: #ff7e67;">S</div>
+                        <div class="tier-dropzone" data-tier="S"></div>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-label" style="background-color: #ffdf71;">A</div>
+                        <div class="tier-dropzone" data-tier="A"></div>
+                    </div>
+                    <div class="tier-row">
+                        <div class="tier-label" style="background-color: #8cd867;">B</div>
+                        <div class="tier-dropzone" data-tier="B"></div>
+                    </div>
                 </div>
-                <p id="tracker-msg" style="color: #ff9e64; font-size: 0.8rem; margin: 5px 0 15px 0; display: none;"></p>
 
-                <div id="targets-container">
-                    <!-- Targets will be injected here -->
+                <!-- Items Pool -->
+                <div class="items-pool" id="items-pool" data-tier="pool">
+                    <div class="tier-item" draggable="true" id="item1">🍎</div>
+                    <div class="tier-item" draggable="true" id="item2">🧊</div>
+                    <div class="tier-item" draggable="true" id="item3">🔥</div>
+                    <div class="tier-item" draggable="true" id="item4">🐉</div>
+                    <div class="tier-item" draggable="true" id="item5">⚡</div>
                 </div>
 
-                <div class="promo">
+                <div class="promo" style="margin-top: 2rem;">
                     <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 App de Night Dragons</h3>
                     <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Descarga la App de Escritorio
-                        para organizar torneos, ver la Tier List oficial y usar utilidades avanzadas.</p>
+                        para guardar tus creadores, usar imágenes reales personalizadas y compartir tus Tier Lists con
+                        el Clan.</p>
                     <a href="https://github.com/GallosInPatas/NightDPage" target="_blank" class="btn"
-                        style="background-color: #7aa2f7; margin-bottom: 0;">Obtener App</a>
+                        style="background-color: #7aa2f7; margin-bottom: 0px; max-width: 200px; margin-left: auto; margin-right: auto;">Obtener
+                        App</a>
                 </div>
             </div>
+
+            <style>
+                .tier-list-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    margin-bottom: 20px;
+                    border: 1px solid #414868;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    background: #0f1015;
+                }
+
+                .tier-row {
+                    display: flex;
+                    min-height: 60px;
+                    border-bottom: 1px solid #2d2f40;
+                }
+
+                .tier-row:last-child {
+                    border-bottom: none;
+                }
+
+                .tier-label {
+                    width: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: bold;
+                    font-size: 1.2rem;
+                    color: #1a1b26;
+                }
+
+                .tier-dropzone {
+                    flex: 1;
+                    padding: 5px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 5px;
+                    align-items: center;
+                    transition: background-color 0.2s;
+                }
+
+                .tier-dropzone.drag-over {
+                    background-color: rgba(255, 255, 255, 0.05);
+                }
+
+                .items-pool {
+                    background: #0f1015;
+                    border: 1px dashed #414868;
+                    border-radius: 8px;
+                    min-height: 80px;
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    padding: 15px;
+                    justify-content: center;
+                    align-items: center;
+                    transition: background-color 0.2s;
+                }
+
+                .items-pool.drag-over {
+                    background-color: rgba(255, 255, 255, 0.05);
+                }
+
+                .tier-item {
+                    width: 50px;
+                    height: 50px;
+                    background: #2d2f40;
+                    border: 2px solid #414868;
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 2rem;
+                    cursor: grab;
+                    user-select: none;
+                    transition: transform 0.1s, box-shadow 0.1s;
+                }
+
+                .tier-item:active {
+                    cursor: grabbing;
+                    transform: scale(0.95);
+                }
+
+                .tier-item.dragging {
+                    opacity: 0.5;
+                }
+            </style>
         </section>
 
     </main>
@@ -440,11 +545,6 @@
                         v.classList.remove('active');
                     }
                 });
-
-                // If switching to tracker, ensure targets are rendered
-                if (targetId === 'view-tracker' && typeof renderAllTargets === 'function') {
-                    renderAllTargets();
-                }
             });
         });
 
@@ -493,295 +593,44 @@
             copyBtn.disabled = true;
         }
 
-        // --- Lógica del Rastreador (Cacería Roblox API Real) ---
-        const targetInput = document.getElementById('target-input');
-        const addTargetBtn = document.getElementById('add-target-btn');
-        const targetsContainer = document.getElementById('targets-container');
-        const trackerMsg = document.getElementById('tracker-msg');
+        // --- Lógica de la Mini Tier List (Drag & Drop) ---
+        const draggables = document.querySelectorAll('.tier-item');
+        const dropzones = document.querySelectorAll('.tier-dropzone, .items-pool');
 
-        const STORAGE_KEY = 'nd_roblox_targets_v2';
-        const UNLOCK_KEY = 'nd_tracker_unlocked';
-        const MAGIC_WORD_HASH = "QWRtaW5ORDIwMjY="; // "AdminND2026" in base64
-
-        let targetsList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-        let isProUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true';
-
-        function saveTargets() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(targetsList));
-        }
-
-        async function fetchRobloxAPI(url, options = {}) {
-            // Utilizamos el proxy CORS AllOrigins que es mucho más estable y funciona directo con APIs JSON
-            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-            try {
-                const res = await fetch(proxyUrl, options);
-                if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-                return await res.json();
-            } catch (error) {
-                console.error("Error fetching Roblox API via proxy:", error);
-                return null;
-            }
-        }
-
-        async function getRobloxUser(username) {
-            // Nota: El endpoint search de roblox no funciona muy bien vía CORS con POST en proxies gratuitos.
-            // Asi que buscamos por usuario usando el endpoint v1 GET de users de allorigins que es más permisivo
-            try {
-                // Primero intentamos buscar el ID interno usando la api de búsquedas de ropro (es más estable para get publico)
-                const searchRes = await fetchRobloxAPI(`https://users.roblox.com/v1/users/search?keyword=${username}&limit=10`);
-                if (searchRes && searchRes.data && searchRes.data.length > 0) {
-                    // Match exacto en caso de múltiples
-                    const exactMatch = searchRes.data.find(u => u.name.toLowerCase() === username.toLowerCase());
-                    if (exactMatch) return exactMatch;
-                    // Si no hay exacto pero la API dice "ok", tomamos el primero porque Roblox suele hacer autocorrect
-                    return searchRes.data[0];
-                }
-            } catch (e) { console.log(e); }
-
-            // Alternativa: Fallback directo al endpoint RoProxy si AllOrigins no parsea bien el JSON
-            const altUrl = `https://users.roproxy.com/v1/users/search?keyword=${username}&limit=10`;
-            try {
-                const res = await fetch(altUrl);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.data && data.data.length > 0) {
-                        const exactMatch = data.data.find(u => u.name.toLowerCase() === username.toLowerCase());
-                        if (exactMatch) return exactMatch;
-                        return data.data[0];
-                    }
-                }
-            } catch (e) { }
-            return null;
-        }
-
-        async function getRobloxAvatar(userId) {
-            const data = await fetchRobloxAPI(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`);
-            if (data && data.data && data.data.length > 0) return data.data[0].imageUrl;
-
-            // Fallback roproxy
-            try {
-                const altUrl = `https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
-                const res = await fetch(altUrl);
-                if (res.ok) {
-                    const altData = await res.json();
-                    if (altData && altData.data) return altData.data[0].imageUrl;
-                }
-            } catch (e) { }
-            return null;
-        }
-
-        async function getRobloxPresence(userId) {
-            const fetchOpts = {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userIds: [userId] })
-            };
-
-            // Proxies a menudo bloquean llamadas POST directas (como el de cors o todo origins), 
-            // así que en este caso forzamos el uso de RoProxy en el cliente, que tiene configurados headers especiales.
-            try {
-                const res = await fetch("https://presence.roproxy.com/v1/presence/users", fetchOpts);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.userPresences && data.userPresences.length > 0) return data.userPresences[0];
-                }
-            } catch (e) {
-                console.error("Fallo la presence API:", e);
-            }
-            return null;
-        }
-
-        function createTargetCard(target) {
-            const card = document.createElement('div');
-            card.className = 'target-card';
-            card.id = `target-card-${target.id}`;
-
-            const avatarHtml = target.avatarUrl
-                ? `<img src="${target.avatarUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
-                : `🏴‍☠️`;
-
-            card.innerHTML = `
-                <div class="target-avatar">${avatarHtml}</div>
-                <div style="text-align: left; flex: 1;">
-                    <div style="font-weight: bold; font-size: 1.1rem; color: #ff4747;">${target.name}</div>
-                    <div style="color: #a9b1d6; font-size: 0.8rem;">Estado: <span class="user-status offline" id="status-${target.id}">Desconocido</span></div>
-                    <div style="color: #414868; font-size: 0.7rem; margin-top: 2px;" id="location-${target.id}"></div>
-                    <div style="display: flex; gap: 5px; margin-top: 5px; align-items: center;">
-                        <button class="refresh-btn" onclick="checkStatus('${target.id}', ${target.robloxId})">🔄 Verificar Estado</button>
-                        ${isProUnlocked ? '<button class="refresh-btn" style="color:#f7768e; border-color:#f7768e; padding: 5px 8px;" onclick="removeTarget(\'' + target.id + '\')" title="Eliminar Objetivo">✖</button>' : ''}
-                    </div>
-                </div>
-            `;
-            return card;
-        }
-
-        window.renderAllTargets = function () {
-            targetsContainer.innerHTML = '';
-            targetsList.forEach(t => {
-                targetsContainer.appendChild(createTargetCard(t));
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
             });
 
-            if (targetsList.length >= 1 && !isProUnlocked) {
-                targetInput.disabled = true;
-                targetInput.placeholder = "Límite máximo alcanzado (1/1)";
-                addTargetBtn.disabled = true;
-                addTargetBtn.style.opacity = "0.5";
-            } else {
-                targetInput.disabled = false;
-                targetInput.placeholder = "Nombre de usuario Roblox...";
-                addTargetBtn.disabled = false;
-                addTargetBtn.style.opacity = "1";
-            }
-        }
-
-        window.checkStatus = async function (targetId, robloxId) {
-            const statusEl = document.getElementById('status-' + targetId);
-            const locationEl = document.getElementById('location-' + targetId);
-            if (!statusEl || !robloxId) return;
-
-            statusEl.className = 'user-status checking';
-            statusEl.textContent = 'Buscando en red...';
-            if (locationEl) locationEl.textContent = '';
-
-            const presence = await getRobloxPresence(robloxId);
-
-            if (!presence) {
-                statusEl.className = 'user-status offline';
-                statusEl.textContent = 'API protegida (Privado)';
-                return;
-            }
-
-            let statusText = 'Desconectado';
-            let statusClass = 'offline';
-            let locationText = '';
-
-            switch (presence.userPresenceType) {
-                case 1:
-                    statusText = 'En Línea (Web)';
-                    statusClass = 'online';
-                    break;
-                case 2:
-                    statusText = 'Jugando';
-                    statusClass = 'online';
-                    locationText = presence.lastLocation || 'Oculto por privacidad';
-                    break;
-                case 3:
-                    statusText = 'En Roblox Studio';
-                    statusClass = 'online';
-                    locationText = presence.lastLocation;
-                    break;
-            }
-
-            // Fallback for when RoProxy restricts detailed location tracking for random users
-            // Often Roblox makes lastLocation null for non-friends
-            statusEl.className = 'user-status ' + statusClass;
-            statusEl.textContent = statusText;
-            if (locationText && locationEl && locationText !== 'Oculto por privacidad') {
-                locationEl.textContent = '📍 Ubicación: ' + locationText;
-            }
-        }
-
-        window.removeTarget = function (targetId) {
-            targetsList = targetsList.filter(t => t.id !== targetId);
-            saveTargets();
-            renderAllTargets();
-        }
-
-        addTargetBtn.addEventListener('click', async () => {
-            const name = targetInput.value.trim();
-
-            if (!name) return;
-
-            // Check for secret code
-            try {
-                if (btoa(name) === MAGIC_WORD_HASH) {
-                    localStorage.setItem(UNLOCK_KEY, 'true');
-                    isProUnlocked = true;
-                    targetInput.value = "";
-                    trackerMsg.textContent = "🔓 Protocolo Administrador Activado. Límite de rastreo eliminado.";
-                    trackerMsg.style.color = "#9ece6a";
-                    trackerMsg.style.display = "block";
-                    renderAllTargets();
-                    setTimeout(() => trackerMsg.style.display = "none", 5000);
-                    return;
-                }
-            } catch (e) { }
-
-            if (!isProUnlocked && targetsList.length >= 1) {
-                trackerMsg.textContent = "Has alcanzado el límite básico (1 cuenta).";
-                trackerMsg.style.color = "#ff9e64";
-                trackerMsg.style.display = "block";
-                return;
-            }
-
-            if (name.length < 3) {
-                trackerMsg.textContent = "⚠️ Ingresa un nombre válido de Roblox.";
-                trackerMsg.style.color = "#ff9e64";
-                trackerMsg.style.display = "block";
-                return;
-            }
-
-            trackerMsg.style.display = "none";
-            addTargetBtn.disabled = true;
-            addTargetBtn.textContent = 'Buscando...';
-            targetInput.disabled = true;
-
-            try {
-                const robloxUser = await getRobloxUser(name);
-
-                if (!robloxUser || !robloxUser.id) {
-                    trackerMsg.textContent = "❌ Jugador no encontrado. Verifica el nombre exacto.";
-                    trackerMsg.style.color = "#ff4747";
-                    trackerMsg.style.display = "block";
-                } else {
-                    // Check if already in list
-                    if (targetsList.find(t => t.robloxId === robloxUser.id)) {
-                        trackerMsg.textContent = "⚠️ Este objetivo ya está en tu rastreador.";
-                        trackerMsg.style.color = "#e0af68";
-                        trackerMsg.style.display = "block";
-                        return;
-                    }
-
-                    const avatarUrl = await getRobloxAvatar(robloxUser.id) || "https://tr.roblox.com/default-avatar-headshot-thumbnail/image?size=150x150";
-                    let finalName = robloxUser.displayName && robloxUser.displayName !== robloxUser.name
-                        ? `${robloxUser.displayName} (@${robloxUser.name})`
-                        : robloxUser.name;
-
-                    const newTarget = {
-                        id: 'T' + Date.now() + Math.random().toString(36).substr(2, 5),
-                        name: finalName,
-                        robloxId: robloxUser.id,
-                        avatarUrl: avatarUrl
-                    };
-
-                    targetsList.push(newTarget);
-                    saveTargets();
-                    renderAllTargets();
-                    targetInput.value = "";
-
-                    setTimeout(() => checkStatus(newTarget.id, newTarget.robloxId), 500);
-                }
-            } catch (e) {
-                trackerMsg.textContent = "❌ Error de conexión con servidores de Roblox.";
-                trackerMsg.style.color = "#ff4747";
-                trackerMsg.style.display = "block";
-                console.error("Detailed Add Error:", e);
-            } finally {
-                addTargetBtn.textContent = 'Fijar';
-                if (isProUnlocked || targetsList.length < 1) {
-                    targetInput.disabled = false;
-                    addTargetBtn.disabled = false;
-                }
-            }
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
         });
 
-        // Initialize display code logic if we land directly with a code and auto switch to Among Us tab, else stay on AmongUs default
+        dropzones.forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault(); // Permitir el drop
+                zone.classList.add('drag-over');
+            });
+
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+
+            zone.addEventListener('drop', e => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const draggable = document.querySelector('.dragging');
+                if (draggable) {
+                    zone.appendChild(draggable);
+                }
+            });
+        });
+
+        // Redirigir la vista si hay código
         if (roomCode) {
             document.querySelector('[data-target="view-amongus"]').click();
         }
-
-        // Initially render targets
-        renderAllTargets();
     </script>
 </body>
 
