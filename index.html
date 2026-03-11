@@ -354,24 +354,80 @@
         const MAGIC_WORD_HASH = "QWRtaW5ORDIwMjY=";
 
         let targetsList = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        // Support migration for older targets saved without robloxId
+        targetsList = targetsList.filter(t => t.robloxId);
         let isProUnlocked = localStorage.getItem(UNLOCK_KEY) === 'true';
 
         function saveTargets() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(targetsList));
         }
 
-        function createTargetCard(targetId, targetName) {
+        async function fetchRobloxAPI(url, options) {
+            try {
+                // Primer intento con RoProxy (proxy común para APIs de Roblox)
+                const urlObj = new URL(url);
+                const roproxyUrl = "https://" + urlObj.hostname.replace("roblox.com", "roproxy.com") + urlObj.pathname + urlObj.search;
+                const res = await fetch(roproxyUrl, options);
+                if (res.ok) return await res.json();
+                throw new Error("RoProxy failed");
+            } catch (e) {
+                // Segundo intento con corsproxy
+                try {
+                    const corsUrl = "https://corsproxy.io/?" + encodeURIComponent(url);
+                    const res2 = await fetch(corsUrl, options);
+                    if (res2.ok) return await res2.json();
+                } catch (e2) {
+                    console.error("API Error:", e2);
+                }
+                return null;
+            }
+        }
+
+        async function getRobloxUser(username) {
+            const data = await fetchRobloxAPI("https://users.roblox.com/v1/usernames/users", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usernames: [username], excludeBannedUsers: true })
+            });
+            if (data && data.data && data.data.length > 0) return data.data[0];
+            return null;
+        }
+
+        async function getRobloxAvatar(userId) {
+            const data = await fetchRobloxAPI(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`);
+            if (data && data.data && data.data.length > 0) return data.data[0].imageUrl;
+            return null;
+        }
+
+        async function getRobloxPresence(userId) {
+            const data = await fetchRobloxAPI("https://presence.roblox.com/v1/presence/users", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userIds: [userId] })
+            });
+            if (data && data.userPresences && data.userPresences.length > 0) return data.userPresences[0];
+            return null;
+        }
+
+        function createTargetCard(target) {
             const card = document.createElement('div');
             card.className = 'target-card';
-            card.id = `target-card-${targetId}`;
+            card.id = `target-card-${target.id}`;
+
+            const avatarHtml = target.avatarUrl
+                ? `<img src="${target.avatarUrl}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`
+                : `🏴‍☠️`;
 
             card.innerHTML = `
-                <div class="target-avatar">🏴‍☠️</div>
+                <div class="target-avatar" style="overflow: hidden; background: transparent;">${avatarHtml}</div>
                 <div style="text-align: left; flex: 1;">
-                    <div style="font-weight: bold; font-size: 1.1rem; color: #ff4747;">${targetName}</div>
-                    <div style="color: #a9b1d6; font-size: 0.8rem;">Estado: <span class="user-status offline" id="status-${targetId}">Desconectado</span></div>
-                    <button class="refresh-btn" onclick="checkStatus('${targetId}')">🔄 Verificar Estado</button>
-                    ${isProUnlocked ? '<button class="refresh-btn" style="color:#f7768e; border-color:#f7768e; margin-left:5px;" onclick="removeTarget(\'' + targetId + '\')">✖</button>' : ''}
+                    <div style="font-weight: bold; font-size: 1.1rem; color: #ff4747;">${target.name}</div>
+                    <div style="color: #a9b1d6; font-size: 0.8rem;">Estado: <span class="user-status offline" id="status-${target.id}">Desconocido</span></div>
+                    <div style="color: #414868; font-size: 0.7rem; margin-top: 2px;" id="location-${target.id}"></div>
+                    <div style="display: flex; gap: 5px; margin-top: 5px; align-items: center;">
+                        <button class="refresh-btn" onclick="checkStatus('${target.id}', ${target.robloxId})">🔄 Verificar Estado</button>
+                        ${isProUnlocked ? '<button class="refresh-btn" style="color:#f7768e; border-color:#f7768e; padding: 5px 8px;" onclick="removeTarget(\'' + target.id + '\')" title="Eliminar Objetivo">✖</button>' : ''}
+                    </div>
                 </div>
             `;
             return card;
@@ -380,7 +436,7 @@
         function renderAllTargets() {
             targetsContainer.innerHTML = '';
             targetsList.forEach(t => {
-                targetsContainer.appendChild(createTargetCard(t.id, t.name));
+                targetsContainer.appendChild(createTargetCard(t));
             });
 
             if (targetsList.length >= 1 && !isProUnlocked) {
@@ -396,21 +452,51 @@
             }
         }
 
-        // Global function for the inline onclick handler
-        window.checkStatus = function (targetId) {
+        window.checkStatus = async function (targetId, robloxId) {
             const statusEl = document.getElementById('status-' + targetId);
-            if (!statusEl) return;
+            const locationEl = document.getElementById('location-' + targetId);
+            if (!statusEl || !robloxId) return;
 
             statusEl.className = 'user-status checking';
-            statusEl.textContent = 'Verificando...';
+            statusEl.textContent = 'Verificando con API...';
+            if (locationEl) locationEl.textContent = '';
 
-            // Fake delay to simulate network request latency
-            setTimeout(() => {
-                // Randomly assign Online or Offline strictly for the visual effect
-                const isOnline = Math.random() > 0.5;
-                statusEl.className = 'user-status ' + (isOnline ? 'online' : 'offline');
-                statusEl.textContent = isOnline ? 'En Juego' : 'Últ. vez hace 2h';
-            }, 1800);
+            const presence = await getRobloxPresence(robloxId);
+
+            if (!presence) {
+                statusEl.className = 'user-status offline';
+                statusEl.textContent = 'Privado / Error conectando';
+                return;
+            }
+
+            // userPresenceType
+            // 0: Offline, 1: Online (Web), 2: InGame, 3: Studio
+            let statusText = 'Desconectado';
+            let statusClass = 'offline';
+            let locationText = '';
+
+            switch (presence.userPresenceType) {
+                case 1:
+                    statusText = 'En Línea (Web)';
+                    statusClass = 'online';
+                    break;
+                case 2:
+                    statusText = 'Jugando';
+                    statusClass = 'online';
+                    locationText = presence.lastLocation || 'Servidor de Roblox';
+                    break;
+                case 3:
+                    statusText = 'En Roblox Studio';
+                    statusClass = 'online';
+                    locationText = presence.lastLocation || 'Creando un juego';
+                    break;
+            }
+
+            statusEl.className = 'user-status ' + statusClass;
+            statusEl.textContent = statusText;
+            if (locationText && locationEl) {
+                locationEl.textContent = '📍 Ubicación: ' + locationText;
+            }
         }
 
         window.removeTarget = function (targetId) {
@@ -419,7 +505,7 @@
             renderAllTargets();
         }
 
-        addTargetBtn.addEventListener('click', () => {
+        addTargetBtn.addEventListener('click', async () => {
             const name = targetInput.value.trim();
 
             if (!name) return;
@@ -434,43 +520,85 @@
                     trackerMsg.style.color = "#9ece6a";
                     trackerMsg.style.display = "block";
                     renderAllTargets(); // Re-render to show delete buttons and unlock input
-
-                    setTimeout(() => {
-                        trackerMsg.style.display = "none";
-                    }, 5000);
+                    setTimeout(() => trackerMsg.style.display = "none", 5000);
                     return;
                 }
             } catch (e) { } // Ignore btoa errors on non-latin chars
 
             if (!isProUnlocked && targetsList.length >= 1) {
                 trackerMsg.textContent = "Has alcanzado el límite básico de rastreo (1 cuenta).";
+                trackerMsg.style.color = "#ff9e64";
                 trackerMsg.style.display = "block";
                 return;
             }
 
             if (name.length < 3) {
                 trackerMsg.textContent = "⚠️ Ingresa un nombre válido de Roblox.";
+                trackerMsg.style.color = "#ff9e64";
                 trackerMsg.style.display = "block";
                 return;
             }
 
             trackerMsg.style.display = "none";
+            addTargetBtn.disabled = true;
+            addTargetBtn.textContent = 'Buscando...';
+            targetInput.disabled = true;
 
-            const newTarget = {
-                id: 'T' + Date.now() + Math.floor(Math.random() * 100),
-                name: name
-            };
+            try {
+                const robloxUser = await getRobloxUser(name);
 
-            targetsList.push(newTarget);
-            saveTargets();
+                if (!robloxUser) {
+                    trackerMsg.textContent = "❌ No se encontró el jugador en Roblox o error de API.";
+                    trackerMsg.style.color = "#ff4747";
+                    trackerMsg.style.display = "block";
+                } else {
+                    const avatarUrl = await getRobloxAvatar(robloxUser.id);
+                    // Determine display name vs username
+                    let finalName = robloxUser.name;
+                    if (robloxUser.displayName && robloxUser.displayName !== robloxUser.name) {
+                        finalName = `${robloxUser.displayName} (@${robloxUser.name})`;
+                    }
 
-            renderAllTargets();
-            targetInput.value = "";
+                    const newTarget = {
+                        id: 'T' + Date.now() + Math.random().toString(36).substr(2, 5),
+                        name: finalName,
+                        robloxId: robloxUser.id,
+                        avatarUrl: avatarUrl
+                    };
+
+                    targetsList.push(newTarget);
+                    saveTargets();
+                    renderAllTargets();
+                    targetInput.value = "";
+
+                    // Auto-check newly added target
+                    setTimeout(() => checkStatus(newTarget.id, newTarget.robloxId), 500);
+                }
+            } catch (e) {
+                trackerMsg.textContent = "❌ Error de conexión con Roblox.";
+                trackerMsg.style.color = "#ff4747";
+                trackerMsg.style.display = "block";
+                console.error(e);
+            } finally {
+                addTargetBtn.textContent = 'Fijar';
+                if (isProUnlocked || targetsList.length < 1) {
+                    targetInput.disabled = false;
+                    addTargetBtn.disabled = false;
+                }
+            }
         });
 
         // Initial render
         renderAllTargets();
+
+        // Auto check targets on boot
+        setTimeout(() => {
+            targetsList.forEach(t => {
+                if (t.robloxId) checkStatus(t.id, t.robloxId);
+            });
+        }, 1000);
     </script>
 </body>
 
 </html>
+```
