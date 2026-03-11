@@ -4,146 +4,357 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abriendo Among Us...</title>
+    <title>Night Dragons - Partida Among Us</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            background-color: #121212;
+            min-height: 100vh;
+            background-color: #0f1015;
             color: #ffffff;
             margin: 0;
-            text-align: center;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
         }
 
         .container {
-            background-color: #1e1e1e;
-            padding: 2.5rem;
+            background-color: #1a1b26;
+            padding: 2rem;
             border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-            max-width: 400px;
-            width: 90%;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid #2d2f40;
+            margin-bottom: 2rem;
         }
 
         h1 {
             color: #ff4747;
-            /* Typical among us red accent */
             margin-top: 0;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
         }
 
         p {
-            color: #b3b3b3;
+            color: #a9b1d6;
             line-height: 1.5;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .code-display {
+            background-color: #0f1015;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            border: 1px dashed #414868;
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #ff4747;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background-color: #4CAF50;
             color: white;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
-            font-size: 16px;
-            transition: background-color 0.3s, transform 0.1s;
+            font-size: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .btn.primary {
+            background-color: #ff4747;
+            box-shadow: 0 4px 15px rgba(255, 71, 71, 0.3);
+        }
+
+        .btn.primary:hover {
+            background-color: #d63c3c;
+            transform: translateY(-2px);
         }
 
         .btn:hover {
-            background-color: #d63c3c;
+            background-color: #45a049;
+            transform: translateY(-2px);
         }
 
         .btn:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #ff4747;
+        /* Demo Section Styles */
+        .demo-section {
+            background: linear-gradient(145deg, #1f2335, #1a1b26);
+            border: 1px solid #414868;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 450px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .demo-badge {
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: #ff9e64;
+            color: #1a1b26;
+            padding: 5px 35px;
+            transform: rotate(45deg);
+            font-weight: bold;
+            font-size: 0.8rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #414868;
+            background: #0f1015;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .target-card {
+            background: #0f1015;
+            border: 1px solid #ff4747;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 15px;
+            display: none;
+            /* Hidden strictly until added */
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .target-avatar {
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1.5rem auto;
+            background: #2d2f40;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
         }
 
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
+        .promo {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #414868;
+            text-align: center;
+        }
 
-            100% {
-                transform: rotate(360deg);
-            }
+        #copy-status {
+            color: #73daca;
+            font-size: 0.9rem;
+            margin-top: -5px;
+            margin-bottom: 15px;
+            height: 20px;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
+    <!-- Among Us Section -->
     <div class="container">
-        <div class="loader"></div>
-        <h1>Redirigiendo...</h1>
-        <p>Intentando abrir Among Us. Si no se abre automáticamente en unos segundos o si el navegador te pregunta,
-            asegúrate de permitir abrir enlaces en la aplicación externa.</p>
+        <h1>🚀 Unirse a la Partida</h1>
+        <p>Estás a punto de unirse a una partida privada de Among Us.</p>
 
-        <p id="copy-status" style="color: #4CAF50; font-weight: bold; display: none;"></p>
-        <a href="amongus://" id="deep-link-btn" class="btn">Abrir Juego Manualmente</a>
-        <br><br>
-        <a href="https://play.google.com/store/apps/details?id=com.innersloth.spacemafia" class="btn"
-            style="background-color: #4CAF50; margin-top: 10px;">Descargar en Play Store</a>
+        <div class="code-display" id="display-code">------</div>
+        <div id="copy-status"></div>
+
+        <button id="copy-btn" class="btn" style="background-color: #3b4252; color: #d8dee9; border: 1px solid #4c566a;">
+            📋 Copiar Código
+        </button>
+
+        <a href="#" id="play-btn" class="btn primary">
+            🎮 Abrir Among Us Ahora
+        </a>
+
+        <a href="https://play.google.com/store/apps/details?id=com.innersloth.spacemafia"
+            style="color: #a9b1d6; font-size: 0.85rem; text-decoration: none; display: inline-block; margin-top: 10px;">
+            ¿No tienes el juego? Descárgalo aquí
+        </a>
+    </div>
+
+    <!-- Roblox Hunter Demo Section -->
+    <div class="demo-section">
+        <div class="demo-badge">REGALO</div>
+        <h2 style="color: #bb9af7; margin-top: 0; display: flex; align-items: center; gap: 10px;">🎯 Cacería Roblox</h2>
+        <p style="font-size: 0.9rem;">Prueba una función exclusiva de nuestra App Oficial. Añade a tu primer objetivo a
+            la
+            lista de caza. ¡Elige bien, en la <span style="color: #ff9e64; font-weight: bold;">Demo</span> solo puedes
+            añadir uno y no se puede borrar!</p>
+
+        <div class="input-group">
+            <input type="text" id="target-input" placeholder="Nombre en Roblox..." autocomplete="off">
+            <button id="add-target-btn" class="btn"
+                style="width: auto; margin: 0; background-color: #bb9af7;">Rastrear</button>
+        </div>
+        <p id="demo-msg" style="color: #ff9e64; font-size: 0.8rem; margin: 5px 0 0 0; display: none;"></p>
+
+        <div class="target-card" id="target-card">
+            <div class="target-avatar">🏴‍☠️</div>
+            <div style="text-align: left; flex: 1;">
+                <div style="font-weight: bold; font-size: 1.1rem; color: #ff4747;" id="target-name">Nombre</div>
+                <div style="color: #a9b1d6; font-size: 0.8rem;">Estado: <span style="color: #ff9e64;">Buscado</span>
+                </div>
+            </div>
+            <div
+                style="font-size: 0.7rem; color: #414868; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; padding-left: 10px; border-left: 1px solid #2d2f40;">
+                DEMO</div>
+        </div>
+
+        <div class="promo">
+            <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 Obtén la App del Clan</h3>
+            <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Añade objetivos ilimitados en Roblox,
+                organiza torneos y usa utilidades avanzadas al unirte al clan.</p>
+            <a href="https://github.com/GallosInPatas/NightDPage" target="_blank" class="btn"
+                style="background-color: #7aa2f7; margin-bottom: 0;">Obtener Beneficios</a>
+        </div>
     </div>
 
     <script>
-        function copyCodeToClipboard(code) {
-            if (!code) return;
-            // La API de portapapeles requiere contexto seguro (HTTPS)
-            navigator.clipboard.writeText(code).then(() => {
-                const statusEl = document.getElementById("copy-status");
-                statusEl.textContent = "¡Código de sala (" + code + ") copiado al portapapeles!";
-                statusEl.style.display = "block";
-            }).catch(err => {
-                console.error("No se pudo copiar el código automáticamente:", err);
-            });
-        }
+        // --- Lógica de Among Us ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let roomCode = urlParams.get('code') || urlParams.get('codigo');
 
-        function openAmongUs() {
-            // Extraer el código de sala de la URL (ej: ?code=ABCDEF o ?codigo=ABCDEF)
-            const urlParams = new URLSearchParams(window.location.search);
-            const roomCode = urlParams.get('code') || urlParams.get('codigo');
+        const displayCodeEl = document.getElementById('display-code');
+        const playBtn = document.getElementById('play-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const copyStatusEl = document.getElementById('copy-status');
 
+        if (roomCode) {
+            roomCode = roomCode.toUpperCase();
+            displayCodeEl.textContent = roomCode;
+
+            // Configurar enlace del juego devolviéndonos a URL Scheme con query intacto
             const queryString = window.location.search;
             const hashString = window.location.hash;
+            playBtn.href = "amongus://" + queryString + hashString;
 
-            // Construir el enlace profundo preservando todo
-            const amongUsBase = "amongus://";
-            const fullDeepLink = amongUsBase + queryString + hashString;
+            // Funcionalidad manual de copiar en vez de redireccionar automaticamente
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(roomCode).then(() => {
+                    copyStatusEl.textContent = "¡Código de sala copiado!";
+                    copyBtn.innerHTML = "✅ Copiado al portapapeles";
+                    copyBtn.style.backgroundColor = "#4CAF50";
+                    copyBtn.style.color = "white";
+                    copyBtn.style.borderColor = "#4CAF50";
 
-            // Actualizar el botón manual
-            const btn = document.getElementById("deep-link-btn");
-            btn.href = fullDeepLink;
-
-            // Si hay un código, intentar copiarlo al portapapeles
-            if (roomCode) {
-                // Al hacer clic en el botón manual, garantizar que se copie
-                btn.addEventListener('click', () => {
-                    copyCodeToClipboard(roomCode);
+                    setTimeout(() => {
+                        copyStatusEl.textContent = "";
+                        copyBtn.innerHTML = "📋 Copiar Código";
+                        copyBtn.style.backgroundColor = "#3b4252";
+                        copyBtn.style.color = "#d8dee9";
+                        copyBtn.style.borderColor = "#4c566a";
+                    }, 3000);
+                }).catch(err => {
+                    copyStatusEl.textContent = "No se pudo copiar (permisos de navegador). Cópialo manualmente arriba.";
+                    copyStatusEl.style.color = "#ff4747";
                 });
-
-                // Intentar copiar automáticamente al cargar
-                copyCodeToClipboard(roomCode);
-            }
-
-            // Intentar redirigir automáticamente al juego
-            window.location.replace(fullDeepLink);
+            });
+        } else {
+            displayCodeEl.textContent = "SIN CÓDIGO";
+            displayCodeEl.style.color = "#ff4747";
+            playBtn.href = "amongus://";
+            copyBtn.style.opacity = "0.5";
+            copyBtn.disabled = true;
         }
 
-        // Ejecutar después de un breve retraso para que la interfaz cargue
-        window.onload = function () {
-            setTimeout(openAmongUs, 300);
-        };
+        // --- Lógica de la Demo Cacería ---
+        const targetInput = document.getElementById('target-input');
+        const addTargetBtn = document.getElementById('add-target-btn');
+        const targetCard = document.getElementById('target-card');
+        const targetNameEl = document.getElementById('target-name');
+        const demoMsg = document.getElementById('demo-msg');
+
+        // Check local storage for existing target
+        const demoStorageKey = 'nightDragonsRobloxTargetDemo';
+        const savedTarget = localStorage.getItem(demoStorageKey);
+
+        if (savedTarget) {
+            showTarget(savedTarget);
+        }
+
+        addTargetBtn.addEventListener('click', () => {
+            const name = targetInput.value.trim();
+
+            if (localStorage.getItem(demoStorageKey)) {
+                demoMsg.textContent = "Ya usaste tu cuota de rastreo en la demo. Descarga la app del Clan.";
+                demoMsg.style.display = "block";
+                return;
+            }
+
+            if (name.length < 3) {
+                demoMsg.textContent = "⚠️ Ingresa un nombre válido de Roblox.";
+                demoMsg.style.display = "block";
+                return;
+            }
+
+            // Save and display
+            localStorage.setItem(demoStorageKey, name);
+            showTarget(name);
+        });
+
+        function showTarget(name) {
+            targetNameEl.textContent = name;
+            targetCard.style.display = "flex";
+            targetInput.disabled = true;
+            targetInput.value = "";
+            targetInput.placeholder = "Objetivo bloqueado 🔒";
+            addTargetBtn.disabled = true;
+            addTargetBtn.style.opacity = "0.5";
+            demoMsg.textContent = "Bloqueado permanentemente en modo Demo.";
+            demoMsg.style.display = "block";
+            demoMsg.style.color = "#a9b1d6";
+        }
     </script>
 </body>
 
