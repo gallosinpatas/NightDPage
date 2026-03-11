@@ -162,21 +162,26 @@
 
             copyBtn.addEventListener('click', () => {
                 navigator.clipboard.writeText(roomCode).then(() => {
-                    copyStatusEl.textContent = "¡Código de sala copiado!";
-                    copyBtn.innerHTML = "✅ Copiado al portapapeles";
+                    copyStatusEl.textContent = "¡Código copiado! Abriendo Among Us...";
+                    copyBtn.innerHTML = "✅ Abriendo Juego...";
                     copyBtn.style.backgroundColor = "#4CAF50";
                     copyBtn.style.color = "white";
                     copyBtn.style.borderColor = "#4CAF50";
 
+                    // Automatically trigger the play button logic to open the game
+                    setTimeout(() => {
+                        window.location.href = playBtn.href;
+                    }, 500);
+
                     setTimeout(() => {
                         copyStatusEl.textContent = "";
-                        copyBtn.innerHTML = "📋 Copiar Código";
+                        copyBtn.innerHTML = "📋 Copiar Código y Jugar";
                         copyBtn.style.backgroundColor = "#3b4252";
                         copyBtn.style.color = "#d8dee9";
                         copyBtn.style.borderColor = "#4c566a";
-                    }, 3000);
+                    }, 3500);
                 }).catch(err => {
-                    copyStatusEl.textContent = "Error de permisos. Cópialo seleccionando el texto.";
+                    copyStatusEl.textContent = "Error al copiar. Selecciona el texto manualmente.";
                     copyStatusEl.style.color = "#ff4747";
                 });
             });
