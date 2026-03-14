@@ -109,15 +109,83 @@
             border-top: 1px dashed #414868;
             text-align: center;
         }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #2d2f40;
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: #a9b1d6;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn.active {
+            color: #ff4747;
+            background: rgba(255, 71, 71, 0.1);
+        }
+
+        /* Form elements */
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #a9b1d6;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f1015;
+            border: 1px solid #414868;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: #7aa2f7;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>🚀 Unirse a la Partida</h1>
-        <p>Estás a punto de unirte a una partida privada de Among Us.</p>
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-amongus" onclick="switchTab('amongus')">🎮 Among Us</button>
+            <button class="tab-btn" id="tab-registro" onclick="switchTab('registro')">📝 Registro de Jugador</button>
+        </div>
 
-        <div class="code-display" id="display-code">------</div>
+        <!-- AMONG US VIEW -->
+        <div id="view-amongus">
+            <h1>🚀 Unirse a la Partida</h1>
+            <p>Estás a punto de unirte a una partida privada de Among Us.</p>
+
+            <div class="code-display" id="display-code">------</div>
         <div id="copy-status"></div>
 
         <button id="copy-btn" class="btn" style="background-color: #3b4252; color: #d8dee9; border: 1px solid #4c566a;">
@@ -133,19 +201,153 @@
             ¿No tienes el juego? Descárgalo aquí
         </a>
 
+        </div>
+
+        <!-- REGISTRO VIEW -->
+        <div id="view-registro" style="display: none;">
+            <h1 style="color: #7aa2f7;">📜 Formulario Oficial</h1>
+            <p>Registra tu información de juego para el servidor.</p>
+            
+            <div class="input-group">
+                <label>👤 Usuario de Roblox</label>
+                <input type="text" id="reg-usuario" class="custom-input" placeholder="Ej: PlayerOne123">
+            </div>
+            
+            <div style="display: flex; gap: 15px;">
+                <div class="input-group" style="flex: 1;">
+                    <label>📈 Nivel Max</label>
+                    <input type="number" id="reg-nivel" class="custom-input" placeholder="Ej: 2550">
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <label>⚔️ Bounty/Honor</label>
+                    <input type="text" id="reg-bounty" class="custom-input" placeholder="Ej: 10.5M">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>🎒 Set de Blox Fruits</label>
+                <input type="text" id="reg-set" class="custom-input" placeholder="Ej: Portal + CDK + Godhuman">
+            </div>
+            
+            <div id="reg-status" style="margin-bottom: 15px; font-weight: bold; font-size: 0.95rem;"></div>
+
+            <button id="submit-reg-btn" class="btn" style="background-color: #5865F2; border: none; margin-top: 10px;" onclick="submitRegistration()">
+                Enviar a Discord 🚀
+            </button>
+        </div>
+
         <div class="promo">
             <h3 style="margin: 0 0 10px 0; font-size: 1.1rem;">🔥 App de Night Dragons</h3>
             <p style="font-size: 0.85rem; margin-bottom: 15px; color: #a9b1d6;">Descarga la App de Escritorio oficial
                 para el clan.</p>
             <a href="https://github.com/GallosInPatas/NightDPage" target="_blank" class="btn"
-                style="background-color: #7aa2f7; margin-bottom: 0px; max-width: 200px; margin-left: auto; margin-right: auto; padding: 10px; font-size: 0.95rem;">Obtener
-                App</a>
+                style="background-color: #7aa2f7; margin-bottom: 0px; max-width: 200px; margin-left: auto; margin-right: auto; padding: 10px; font-size: 0.95rem;">Obtener App</a>
         </div>
     </div>
 
     <script>
+        // --- WEBHOOK CONFIGURATION ---
+        // ¡Admins! Reemplacen este enlace con el Webhook real generado en Discord.
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/CHANGEME";
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.getElementById('view-amongus').style.display = tabId === 'amongus' ? 'block' : 'none';
+            document.getElementById('view-registro').style.display = tabId === 'registro' ? 'block' : 'none';
+            
+            document.getElementById('tab-amongus').className = tabId === 'amongus' ? 'tab-btn active' : 'tab-btn';
+            document.getElementById('tab-registro').className = tabId === 'registro' ? 'tab-btn active' : 'tab-btn';
+            
+            // Update URL hash for sharing
+            if (history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.set('view', tabId);
+                history.replaceState(null, '', url);
+            }
+        }
+
+        // Registration Submission Logic
+        async function submitRegistration() {
+            const btn = document.getElementById('submit-reg-btn');
+            const statusEl = document.getElementById('reg-status');
+            
+            const user = document.getElementById('reg-usuario').value.trim();
+            const level = document.getElementById('reg-nivel').value.trim();
+            const bounty = document.getElementById('reg-bounty').value.trim();
+            const set = document.getElementById('reg-set').value.trim();
+
+            if (!user || !level || !bounty || !set) {
+                statusEl.textContent = "❌ Por favor completa todos los campos.";
+                statusEl.style.color = "#ff4747";
+                return;
+            }
+
+            if (DISCORD_WEBHOOK_URL.includes("CHANGEME")) {
+                statusEl.textContent = "⚙️ Error: El administrador aún no ha configurado el Webhook.";
+                statusEl.style.color = "#ffaa00";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = "Enviando... ⏳";
+            statusEl.textContent = "";
+
+            const payload = {
+                embeds: [{
+                    title: "📜 Registro de Información de Jugador",
+                    color: 5793266,
+                    fields: [
+                        { name: "👤 Usuario de Roblox", value: "**" + user + "**", inline: true },
+                        { name: "📈 Nivel", value: level, inline: true },
+                        { name: "⚔️ Bounty/Honor", value: bounty, inline: true },
+                        { name: "🎒 Set Actual", value: set, inline: false }
+                    ],
+                    thumbnail: {
+                        url: "https://tr.rbxcdn.com/394c8e76c1cbbf2bde6453d854e4c297/150/150/Image/Webp"
+                    },
+                    footer: { text: "Enviado usando Night Dragons Webhook" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+
+                statusEl.textContent = "✅ ¡Tu información ha sido enviada con éxito!";
+                statusEl.style.color = "#73daca";
+                
+                // Clear form
+                document.getElementById('reg-usuario').value = '';
+                document.getElementById('reg-nivel').value = '';
+                document.getElementById('reg-bounty').value = '';
+                document.getElementById('reg-set').value = '';
+                
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "❌ Error de conexión al enviar. Intenta de nuevo.";
+                statusEl.style.color = "#ff4747";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Enviar a Discord 🚀";
+            }
+        } // <-- Added missing closing brace here
+
         const urlParams = new URLSearchParams(window.location.search);
         let roomCode = urlParams.get('code') || urlParams.get('codigo');
+        const viewOverride = urlParams.get('view');
+
+
+        if (viewOverride === 'registro') {
+            switchTab('registro');
+        }
 
         const displayCodeEl = document.getElementById('display-code');
         const playBtn = document.getElementById('play-btn');
