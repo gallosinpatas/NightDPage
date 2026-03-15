@@ -177,7 +177,8 @@
         <!-- Tabs -->
         <div class="tabs">
             <button class="tab-btn active" id="tab-amongus" onclick="switchTab('amongus')">🎮 Among Us</button>
-            <button class="tab-btn" id="tab-registro" onclick="switchTab('registro')">📝 Registro de Jugador</button>
+            <button class="tab-btn" id="tab-registro" onclick="switchTab('registro')">📝 Registro</button>
+            <button class="tab-btn" id="tab-enemigos" onclick="switchTab('enemigos')">🎯 Enemigos</button>
         </div>
 
         <!-- AMONG US VIEW -->
@@ -205,8 +206,8 @@
 
         <!-- REGISTRO VIEW -->
         <div id="view-registro" style="display: none;">
-            <h1 style="color: #7aa2f7;">📜 Formulario Oficial</h1>
-            <p>Registra tu información de juego para el servidor.</p>
+            <h1 style="color: #7aa2f7;">📜 Registro de Jugador</h1>
+            <p>Registra tu información para el servidor.</p>
             
             <div class="input-group">
                 <label>👤 Usuario de Roblox</label>
@@ -232,7 +233,39 @@
             <div id="reg-status" style="margin-bottom: 15px; font-weight: bold; font-size: 0.95rem;"></div>
 
             <button id="submit-reg-btn" class="btn" style="background-color: #5865F2; border: none; margin-top: 10px;" onclick="submitRegistration()">
-                Enviar a Discord 🚀
+                Enviar Registro 🚀
+            </button>
+        </div>
+
+        <!-- ENEMIGOS VIEW -->
+        <div id="view-enemigos" style="display: none;">
+            <h1 style="color: #ff4747;">🎯 Reportar Enemigo</h1>
+            <p>Reporta a un rival detectado para la cacería del clan.</p>
+            
+            <div class="input-group">
+                <label>👤 Nombre Real Roblox</label>
+                <input type="text" id="ene-nombre" class="custom-input" placeholder="Ej: Indra_Rival">
+            </div>
+            
+            <div class="input-group">
+                <label>🔗 Link de Perfil</label>
+                <input type="text" id="ene-perfil" class="custom-input" placeholder="https://www.roblox.com/users/...">
+            </div>
+
+            <div class="input-group">
+                <label>🏷️ Apodo Personalizado</label>
+                <input type="text" id="ene-apodo" class="custom-input" placeholder="Ej: 'El pesado del PvP'">
+            </div>
+
+            <div class="input-group">
+                <label>📸 Foto del Objetivo (Opcional)</label>
+                <input type="file" id="ene-foto" class="custom-input" accept="image/*" style="padding: 10px;">
+            </div>
+            
+            <div id="ene-status" style="margin-bottom: 15px; font-weight: bold; font-size: 0.95rem;"></div>
+
+            <button id="submit-ene-btn" class="btn" style="background-color: #ff4747; border: none; margin-top: 10px;" onclick="submitEnemyReport()">
+                Enviar Reporte ⚔️
             </button>
         </div>
 
@@ -248,15 +281,17 @@
     <script>
         // --- WEBHOOK CONFIGURATION ---
         // ¡Admins! Reemplacen este enlace con el Webhook real generado en Discord.
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1482529899800432662/f8vlOl5mpfzXrv2Xdkq-tfvcq3NIZ3aAC_O798qJA9KjCePhz9rSHkSBw4y4TRkM95VK";
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/CHANGEME";
 
         // Tab Switching Logic
         function switchTab(tabId) {
             document.getElementById('view-amongus').style.display = tabId === 'amongus' ? 'block' : 'none';
             document.getElementById('view-registro').style.display = tabId === 'registro' ? 'block' : 'none';
+            document.getElementById('view-enemigos').style.display = tabId === 'enemigos' ? 'block' : 'none';
             
             document.getElementById('tab-amongus').className = tabId === 'amongus' ? 'tab-btn active' : 'tab-btn';
             document.getElementById('tab-registro').className = tabId === 'registro' ? 'tab-btn active' : 'tab-btn';
+            document.getElementById('tab-enemigos').className = tabId === 'enemigos' ? 'tab-btn active' : 'tab-btn';
             
             // Update URL hash for sharing
             if (history.replaceState) {
@@ -336,17 +371,100 @@
                 statusEl.style.color = "#ff4747";
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = "Enviar a Discord 🚀";
+                btn.innerHTML = "Enviar Registro 🚀";
             }
-        } // <-- Added missing closing brace here
+        }
+
+        async function submitEnemyReport() {
+            const btn = document.getElementById('submit-ene-btn');
+            const statusEl = document.getElementById('ene-status');
+            
+            const nombre = document.getElementById('ene-nombre').value.trim();
+            const perfil = document.getElementById('ene-perfil').value.trim();
+            const apodo = document.getElementById('ene-apodo').value.trim();
+            const fotoInput = document.getElementById('ene-foto');
+            const file = fotoInput.files[0];
+
+            if (!nombre || !perfil || !apodo) {
+                statusEl.textContent = "❌ Por favor completa los campos principales.";
+                statusEl.style.color = "#ff4747";
+                return;
+            }
+
+            if (DISCORD_WEBHOOK_URL.includes("CHANGEME")) {
+                statusEl.textContent = "⚙️ Error: El administrador aún no ha configurado el Webhook.";
+                statusEl.style.color = "#ffaa00";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = "Enviando... ⏳";
+            statusEl.textContent = "";
+
+            const formData = new FormData();
+            const payload = {
+                embeds: [{
+                    title: "🎯 OBJETIVO DETECTADO",
+                    description: "Se ha reportado un nuevo enemigo para la lista de cacería.",
+                    color: 16730183,
+                    fields: [
+                        { name: "👤 Nombre Roblox", value: "**" + nombre + "**", inline: true },
+                        { name: "🏷️ Apodo", value: apodo, inline: true },
+                        { name: "🔗 Enlace de Perfil", value: "[Clic aquí para abrir](" + perfil + ")", inline: false }
+                    ],
+                    thumbnail: {
+                        url: "https://media.discordapp.net/attachments/1118318182906806312/1154545645648855070/dragon-logo.png"
+                    },
+                    footer: { text: "Sistema de Inteligencia Night Dragons" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            const match = perfil.match(/\/users\/(\d+)/);
+            if (match) {
+                payload.embeds[0].author = {
+                    name: nombre,
+                    icon_url: "https://www.roblox.com/headshot-thumbnail/image?userId=" + match[1] + "&width=420&height=420&format=png"
+                };
+            }
+
+            formData.append('payload_json', JSON.stringify(payload));
+            if (file) formData.append('file', file);
+
+            try {
+                const response = await fetch(DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error("HTTP " + response.status);
+
+                statusEl.textContent = "✅ ¡Reporte enviado con éxito!";
+                statusEl.style.color = "#73daca";
+                
+                document.getElementById('ene-nombre').value = '';
+                document.getElementById('ene-perfil').value = '';
+                document.getElementById('ene-apodo').value = '';
+                fotoInput.value = '';
+                
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = "❌ Error al enviar el reporte.";
+                statusEl.style.color = "#ff4747";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = "Enviar Reporte ⚔️";
+            }
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         let roomCode = urlParams.get('code') || urlParams.get('codigo');
         const viewOverride = urlParams.get('view');
 
-
         if (viewOverride === 'registro') {
             switchTab('registro');
+        } else if (viewOverride === 'enemigos') {
+            switchTab('enemigos');
         }
 
         const displayCodeEl = document.getElementById('display-code');
@@ -397,4 +515,4 @@
     </script>
 </body>
 
-</html>
+</html>s
